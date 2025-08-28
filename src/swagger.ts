@@ -1,12 +1,12 @@
-const options = {
+export default {
     info: {
         title: "Morosystems Todo API",
         version: "1.1.0",
         description: "A simple backend for todo app",
     },
-    baseDir: __dirname,
+    baseDir: import.meta.dirname,
     // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
-    filesPattern: './**/*.js',
+    filesPattern: './**/*.ts',
     // URL where SwaggerUI will be rendered
     swaggerUIPath: '/api-docs',
     // Expose OpenAPI UI
@@ -18,5 +18,3 @@ const options = {
     // Set non-required fields as nullable by default
     notRequiredAsNullable: false,
 };
-
-module.exports = options;

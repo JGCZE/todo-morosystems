@@ -1,15 +1,18 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const expressJSDocSwagger = require('express-jsdoc-swagger');
+import express from 'express'
 
-const swaggerSpec = require('./swagger');
+import bodyParser from 'body-parser';
+
+import expressJSDocSwagger from 'express-jsdoc-swagger';
+import swaggerSpec from './swagger.ts';
+
+import routes from './routes.ts';
 
 const app = express();
 const port = 8080;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(function(req, res, next) {
+app.use((_, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
@@ -17,8 +20,6 @@ app.use(function(req, res, next) {
 });
 
 expressJSDocSwagger(app)(swaggerSpec)
-
-const routes = require('./routes');
 
 routes(app);
 

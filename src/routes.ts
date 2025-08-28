@@ -1,4 +1,6 @@
-const controller = require('./controller.js');
+import { type Application } from 'express';
+
+import * as controller from './controller.ts';
 
 /**
  * @typedef {object} Task
@@ -19,7 +21,7 @@ const controller = require('./controller.js');
  * @property {string} text.required - Content
  */
 
-module.exports = (app) => {
+export default (app: Application) => {
 
     /**
      * GET /tasks
@@ -68,7 +70,7 @@ module.exports = (app) => {
      */
     app.route('/tasks/:id')
         .post(controller.updateText)
-        .delete(controller.delete);
+        .delete(controller.deleteTask);
 
     /**
      * POST /tasks/{id}/complete
