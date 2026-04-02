@@ -91,5 +91,13 @@ export default defineConfig([
     rules: {
       'react-refresh/only-export-components': 'off',
     },
+  },
+  {
+    files: ['src/api/generatedApi.ts'],
+    rules: {
+      'perfectionist/sort-imports': 'off',
+      'perfectionist/sort-jsx-props': 'off',
+      'perfectionist/sort-objects': 'off',
+    },
   }
 ])
