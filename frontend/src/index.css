@@ -263,4 +263,10 @@ code {
   html {
     @apply font-sans;
   }
+  section {
+    @apply mb-4;
+  }
+  button {
+    @apply cursor-pointer;
+  }
 }
