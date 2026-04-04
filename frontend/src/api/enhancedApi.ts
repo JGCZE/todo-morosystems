@@ -50,8 +50,26 @@ const enhancedApi = generatedApi.enhanceEndpoints({
         }
       },
     },
+    postTasksById: {
+      onQueryStarted: async ({ id, updateTask }, { dispatch, queryFulfilled }) => {
+        const optimisticUpdate = dispatch(
+          generatedApi.util.updateQueryData("getTasks", undefined, (draft) => {
+            const targetTask = draft.find((t) => t.id === id)
+
+            if (targetTask) {
+              targetTask.text = updateTask.text
+            }
+          })
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          optimisticUpdate.undo()
+        }
+      }
+    },
     postTasksByIdComplete: {
-      // invalidatesTags: ["Task"],
       onQueryStarted: async (task, { dispatch, queryFulfilled }) => {
         const optimisticUpdate = dispatch(
           generatedApi.util.updateQueryData("getTasks", undefined, (draft) => {
@@ -71,7 +89,6 @@ const enhancedApi = generatedApi.enhanceEndpoints({
       }
     },
     postTasksByIdIncomplete: {
-      // invalidatesTags: ["Task"],
       onQueryStarted: async (task, { dispatch, queryFulfilled }) => {
         const optimisticUpdate = dispatch(
           generatedApi.util.updateQueryData("getTasks", undefined, (draft) => {
@@ -90,7 +107,7 @@ const enhancedApi = generatedApi.enhanceEndpoints({
           optimisticUpdate.undo()
         }
       }
-    },
+    }
   },
 });
 
@@ -99,5 +116,6 @@ export const {
   useGetTasksQuery,
   usePostTasksByIdCompleteMutation,
   usePostTasksByIdIncompleteMutation,
+  usePostTasksByIdMutation,
   usePostTasksMutation,
 } = enhancedApi;

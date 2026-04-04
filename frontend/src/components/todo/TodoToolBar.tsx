@@ -4,8 +4,8 @@ import { useTodoToolBar } from "./hooks/useTodoToolBar";
 
 const TodoToolBar = () => {
   const {
-    changeFilter, handleAddTask, handleAllTasksDone,
-    handleDeleteAllCompleted, newTask, setNewTask,
+    changeFilter, filterStatus, handleAddTask,
+    handleAllTasksDone, handleDeleteAllCompleted, newTask, setNewTask,
   } = useTodoToolBar()
 
   return (
@@ -37,21 +37,21 @@ const TodoToolBar = () => {
         <div className="flex gap-2">
           <Button
             onClick={() => changeFilter("all")}
-            variant="outline"
+            variant={filterStatus === "all" ? "secondary" : "outline"}
           >
             all
           </Button>
 
           <Button
             onClick={() => changeFilter("active")}
-            variant="outline"
+            variant={filterStatus === "active" ? "secondary" : "outline"}
           >
             active
           </Button>
 
           <Button
             onClick={() => changeFilter("completed")}
-            variant="outline"
+            variant={filterStatus === "completed" ? "secondary" : "outline"}
           >
             completed
           </Button>
@@ -72,6 +72,7 @@ const TodoToolBar = () => {
           </Button>
         </div>
       </div>
+
     </section>
   )
 }

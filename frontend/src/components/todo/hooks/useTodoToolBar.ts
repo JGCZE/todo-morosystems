@@ -1,6 +1,8 @@
 import type { TFilter } from "@/store/filterSlice";
+import type { RootState } from "@/store/store";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import { useDeleteTasksByIdMutation, useGetTasksQuery, usePostTasksByIdCompleteMutation, usePostTasksMutation } from "@/api/enhancedApi";
 import { setFilter } from '@/store/filterSlice';
 
@@ -16,14 +18,19 @@ export const useTodoToolBar = () => {
 
   const changeFilter = (value: TFilter) => dispatch(setFilter(value))
 
+  const filterStatus = useSelector((state: RootState) => state.filtering.value);
 
   const handleAddTask = async () => {
     if (!newTask.trim()) {
       return
     }
 
-    await addTask({ createTask: { text: newTask } })
-    setNewTask("")
+    try {
+      await addTask({ createTask: { text: newTask } }).unwrap()
+      setNewTask("")
+    } catch {
+      toast.error("The task could not be added. Please try again later.")
+    }
   }
 
   const handleDeleteAllCompleted = async () => {
@@ -36,12 +43,24 @@ export const useTodoToolBar = () => {
     const isError = result.some((res) => res.status === "rejected")
 
     if (isError) {
-      alert("Failed to delete some tasks. Please try again.")
+      toast.error("Some tasks could not be deleted. Please try again later.")
     }
   }
 
+  const getVisibleTasks = () => {
+    if (filterStatus === "completed") {
+      return tasks?.filter((t) => t.completed) ?? []
+    }
+
+    if (filterStatus === "active") {
+      return tasks?.filter((t) => !t.completed) ?? []
+    }
+
+    return tasks ?? []
+  }
+
   const handleAllTasksDone = async () => {
-    const activeTasks = tasks?.filter((task) => !task.completed) ?? []
+    const activeTasks = getVisibleTasks().filter((task) => !task.completed)
 
     const result = await Promise.allSettled(
       activeTasks.map(({ id }) => updateToCompleted({ id }).unwrap())
@@ -50,13 +69,13 @@ export const useTodoToolBar = () => {
     const isError = result.some((res) => res.status === "rejected")
 
     if (isError) {
-      alert("Failed to update some tasks. Please try again.")
+      toast.error("Some tasks could not be marked as completed. Please try again later.")
     }
-
   }
 
   return {
     changeFilter,
+    filterStatus,
     handleAddTask,
     handleAllTasksDone,
     handleDeleteAllCompleted,
