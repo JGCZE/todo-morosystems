@@ -1,21 +1,12 @@
 import { Button } from "@ui/Button"
 import { Input } from "@ui/Input"
-import { useState } from "react";
-import { usePostTasksMutation } from "@/api/enhancedApi";
+import { useTodoToolBar } from "./hooks/useTodoToolBar";
 
 const TodoToolBar = () => {
-  const [newTask, setNewTask] = useState("")
-
-  const [addTask] = usePostTasksMutation();
-
-  const handleAddTask = async () => {
-    if (!newTask.trim()) {
-      return
-    }
-
-    await addTask({ createTask: { text: newTask } })
-    setNewTask("")
-  }
+  const {
+    changeFilter, handleAddTask, handleAllTasksDone,
+    handleDeleteAllCompleted, newTask, setNewTask,
+  } = useTodoToolBar()
 
   return (
     <section className="border-b">
@@ -33,21 +24,52 @@ const TodoToolBar = () => {
           value={newTask}
         />
 
-        <Button disabled={!newTask} onClick={handleAddTask}>
+        <Button
+          className="border-black"
+          disabled={!newTask}
+          onClick={handleAddTask}
+        >
           Add Task
         </Button>
       </div>
 
       <div className="my-4 flex justify-center md:justify-between flex-wrap gap-2">
         <div className="flex gap-2">
-          <Button variant="outline">all</Button>
-          <Button variant="outline">active</Button>
-          <Button variant="outline">completed</Button>
+          <Button
+            onClick={() => changeFilter("all")}
+            variant="outline"
+          >
+            all
+          </Button>
+
+          <Button
+            onClick={() => changeFilter("active")}
+            variant="outline"
+          >
+            active
+          </Button>
+
+          <Button
+            onClick={() => changeFilter("completed")}
+            variant="outline"
+          >
+            completed
+          </Button>
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline">all done</Button>
-          <Button variant="destructive">remove completed</Button>
+          <Button
+            onClick={handleAllTasksDone}
+            variant="outline">
+            all done
+          </Button>
+
+          <Button
+            onClick={handleDeleteAllCompleted}
+            variant="destructive"
+          >
+            remove completed
+          </Button>
         </div>
       </div>
     </section>

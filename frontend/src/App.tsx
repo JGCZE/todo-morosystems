@@ -2,7 +2,7 @@ import { useGetTasksQuery } from '@/api/enhancedApi'
 import { TodoItems, TodoToolBar } from './components/todo'
 
 const App = () => {
-  const { error } = useGetTasksQuery()
+  const { data: tasks, error } = useGetTasksQuery()
 
   if (error) return <p>Error loading tasks</p>
 
@@ -15,6 +15,12 @@ const App = () => {
       <TodoToolBar />
 
       <TodoItems />
+
+      <div>
+        <p>
+          hotové úkoly: {tasks?.filter((task) => task.completed).length}
+        </p>
+      </div>
     </div>
   )
 }
