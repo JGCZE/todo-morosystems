@@ -28,7 +28,8 @@ export const useTodoToolBar = () => {
     try {
       await addTask({ createTask: { text: newTask } }).unwrap()
       setNewTask("")
-    } catch {
+    } catch (error) {
+      console.error(error)
       toast.error("The task could not be added. Please try again later.")
     }
   }
@@ -43,6 +44,8 @@ export const useTodoToolBar = () => {
     const isError = result.some((res) => res.status === "rejected")
 
     if (isError) {
+      const errors = result.filter((r) => r.status === "rejected")
+      console.error(errors)
       toast.error("Some tasks could not be deleted. Please try again later.")
     }
   }
@@ -69,6 +72,8 @@ export const useTodoToolBar = () => {
     const isError = result.some((res) => res.status === "rejected")
 
     if (isError) {
+      const errors = result.filter((r) => r.status === "rejected")
+      console.error(errors)
       toast.error("Some tasks could not be marked as completed. Please try again later.")
     }
   }

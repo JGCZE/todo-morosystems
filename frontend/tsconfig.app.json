@@ -30,5 +30,6 @@
       "@ui/*": ["./src/components/ui/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/api/openapi.config.cts"]
 }

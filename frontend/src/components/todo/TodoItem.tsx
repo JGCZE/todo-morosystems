@@ -20,12 +20,14 @@ const TodoItem = ({ task }: { task: Task }) => {
   const [updateTask] = usePostTasksByIdMutation();
 
   const toggleCompleted = async () => {
+    const action = completed
+      ? updateToIncompleted({ id })
+      : updateToCompleted({ id })
+
     try {
-      await (completed
-        ? updateToIncompleted({ id })
-        : updateToCompleted({ id })
-      ).unwrap()
-    } catch {
+      await action.unwrap()
+    } catch (error) {
+      console.error(error)
       toast.error("The task status could not be changed.")
     }
   }
@@ -37,7 +39,8 @@ const TodoItem = ({ task }: { task: Task }) => {
 
     try {
       await updateTask({ id, updateTask: { text: newText } }).unwrap()
-    } catch {
+    } catch (error) {
+      console.error(error)
       toast.error("The task could not be updated. Please try again later.")
     }
 
@@ -47,7 +50,8 @@ const TodoItem = ({ task }: { task: Task }) => {
   const handleDelete = async () => {
     try {
       await deleteTask({ id }).unwrap()
-    } catch {
+    } catch (error) {
+      console.error(error)
       toast.error("The task could not be deleted.")
     }
   }
@@ -59,7 +63,7 @@ const TodoItem = ({ task }: { task: Task }) => {
 
   return (
     <li className="flex items-center justify-between mb-6" key={id}>
-      <div className="flex items-center gap-2 min-w-0">
+      <div className="flex items-center gap-2 min-w-0 sm:flex-1 sm:mr-14 md:mr-20">
         <Checkbox
           checked={completed}
           className="size-5"
@@ -81,17 +85,17 @@ const TodoItem = ({ task }: { task: Task }) => {
               value={newText}
             />
             <Button
-              onClick={() => {
-                handleSaveEdit()
-              }
-              }
+              onClick={handleSaveEdit}
               size="icon-sm"
             >
               <Save />
             </Button>
           </>
         ) : (
-          <Label className="text-sm sm:text-base line-clamp-2 md:line-clamp-1 text-left cursor-pointer" htmlFor={id}>
+          <Label
+            className="text-sm line-clamp-2 text-left cursor-pointer sm:text-base md:line-clamp-1"
+            htmlFor={id}
+          >
             {text}
           </Label>
         )}

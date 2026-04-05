@@ -21,7 +21,6 @@ const TodoItems = () => {
     )
   }
 
-
   const itemsToShow = tasks?.filter((task) => {
     if (filter === "completed") {
       return task.completed
@@ -34,18 +33,24 @@ const TodoItems = () => {
     return task
   })
 
+  if (!itemsToShow?.length && !isLoading) {
+    return (
+      <div className="mx-auto mt-10 p-4 text-center">
+        <p>Žádné úkoly k zobrazení.</p>
+      </div>
+    )
+  }
+
   return (
     <section>
       {isLoading ? (
         <TodoItemSkeleton count={4} />
       ) : (
-        <>
-          <ul>
-            {itemsToShow?.map((task) => (
-              <TodoItem key={task.id} task={task} />
-            ))}
-          </ul>
-        </>
+        <ul>
+          {itemsToShow?.map((task) => (
+            <TodoItem key={task.id} task={task} />
+          ))}
+        </ul>
       )}
 
       <p>
